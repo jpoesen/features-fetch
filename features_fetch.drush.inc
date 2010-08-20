@@ -56,6 +56,7 @@ function features_fetch_execute($featurename) {
 
     // figure out where drush is installed and load backup.inc
     // which we need to backup our Feature module before replacing it
+    // TODO: figure out a better way to include this file
     $list = drush_commandfile_list();
     $updatecode_include_path = str_replace('pm.drush.inc', 'version_control/backup.inc', $list['pm']);
     require_once $updatecode_include_path;
