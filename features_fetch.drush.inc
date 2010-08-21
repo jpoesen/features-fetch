@@ -83,8 +83,17 @@ function features_fetch_execute($featurename) {
 
     if (drush_shell_exec($tar_cmd)){
       drush_log('Copied ' . $project['tarname'] . ' to ' . $config['feature_destination_path'], 'ok');
+      if ($config['cleanup'] == 1){
+        if (file_exists($config['download_path'] . $project['tarname'])) {
+          if(unlink($config['download_path'] . $project['tarname'])){
+            drush_log('Cleaned up ' . $project['tarname'], 'ok');
+          } else {
+            drush_set_error('Unable to remove ' . $project['tarname'] . ' from ' . $config['download_path']);
+          }
+        }
+      }
     } else {
-      drush_set_error('Failed to copy ' . $config['download_path'] . $project['tarname'] . '.tar to ' . $config['feature_destination_path'] . '/' . $featurename . '/');
+      drush_set_error('Failed to copy ' . $config['download_path'] . $project['tarname'] . ' to ' . $config['feature_destination_path'] . '/' . $featurename . '/');
     }    
   } else {
     drush_set_error('Failed to retrieve a <' . $featurename . '> Feature at '. $config['download_path']); 

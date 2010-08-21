@@ -26,14 +26,21 @@ INSTALLATION
   2. Clone this repo to $HOME/.drush/
 
   3. open up $HOME/.drush/features_fetch/features_fetch.drush.ini and specify your
-download path and features destination path.
+download path, features destination path and whether or not to clean up afterwards.
 
-download path: the path where your browser commonly saves downloads to
+download path: 
+  The path where your browser commonly saves downloads to
   example: /Users/alice/Downloads/
   
-features destination path: the path where you commonly store your custom features modules
+features destination path: 
+  The path where you commonly store your custom features modules
   example: sites/all/modules/custom/features/
   note: these settings are machine-wide. Project-specific settings will be added soon. 
+
+cleanup: 
+  default value = 1. 
+  set to 0 to remove the downloaded feature module .tar file from your downloads directory 
+  after successful deployment.
 
 note: drush command extensions can be installed at alternative locations. Consult 
 /path/to/drush/README.txt for more details.
@@ -58,3 +65,4 @@ admin interface and then deploy it with a single drush ff command.
 TODO
 ----
 * provide project-specific download path and features destination path
+* code cleanup
