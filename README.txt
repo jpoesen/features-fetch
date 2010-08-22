@@ -23,7 +23,13 @@ INSTALLATION
 ------------
   1. If you haven't already done so, create a .drush directory under your home directory.
 
+    $ mkdir ~/.drush # if necessary
+
   2. Clone this repo to $HOME/.drush/
+
+    $ cd ~/.drush
+    $ git clone git://github.com/jpoesen/features-fetch.git
+
 
   3. open up $HOME/.drush/features_fetch/features_fetch.drush.ini and specify your
 download path, features destination path and whether or not to clean up afterwards.
@@ -66,3 +72,4 @@ TODO
 ----
 * provide project-specific download path and features destination path
 * code cleanup
+
