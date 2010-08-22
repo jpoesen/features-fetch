@@ -33,7 +33,7 @@ function features_fetch_execute($featurename) {
   // grab some config settings
   if ($config = @parse_ini_file(dirname(__FILE__) . '/features_fetch.drush.ini')){
     // log success
-    drush_log('Retrieved config file', 'ok');
+    drush_log(dt('Retrieved config file'), 'ok');
     
     // scan download directory for one or more versions of our Feature module
     $dirhandle = opendir($config['download_path']);
@@ -47,7 +47,8 @@ function features_fetch_execute($featurename) {
     } 
     closedir($dirhandle);
   } else {
-     drush_die('Failed to retrieve' . dirname(__FILE__) . '/features_fetch.drush.ini : File not found.');
+     drush_die(dt('Failed to retrieve !incfiledir/features_fetch.drush.ini : File not found.'), 
+     array('!incfiledir' => dirname(__FILE__)));
   }
   
   if ($files) {
@@ -67,7 +68,8 @@ function features_fetch_execute($featurename) {
     $project['path'] = $config['feature_destination_path'] . $project['name'];
     $project['full_project_path'] = $drupal_root . '/' . $project['path'];
 
-    drush_log('Retrieved ' . $project['tarname'], 'ok');
+    $msg = dt('Retrieved !tarname', array('!tarname' => $project['tarname']));
+    drush_log($msg, 'ok');
 
     // only perform a backup if the Feature module was already installed
     $backup = new drush_pm_version_control_backup;
@@ -82,27 +84,57 @@ function features_fetch_execute($featurename) {
     $tar_cmd .= " -C " . $drupal_root . "/" . $config['feature_destination_path'];
 
     if (drush_shell_exec($tar_cmd)){
-      drush_log('Copied ' . $project['tarname'] . ' to ' . $config['feature_destination_path'], 'ok');
+      $msg = dt('Copied !tarname to !dest', 
+        array(
+          '!tarname' => $project['tarname'], 
+          '!dest' => $config['feature_destination_path'],
+        )
+      );
+      drush_log($msg, 'ok');
+      
       if ($config['cleanup'] == 1){
         if (file_exists($config['download_path'] . $project['tarname'])) {
           if(unlink($config['download_path'] . $project['tarname'])){
-            drush_log('Cleaned up ' . $project['tarname'], 'ok');
+            $msg = dt('Cleaned up !tarname', array('!tarname' =>  $project['tarname']));
+            drush_log($msg, 'ok');
           } else {
-            drush_set_error('Unable to remove ' . $project['tarname'] . ' from ' . $config['download_path']);
+            $msg = dt('Unable to remove !tarname from !downpath', 
+              array(
+                '!tarname' => $project['tarname'], 
+                '!downpath' => $config['download_path'],
+              )
+            );
+            drush_set_error($msg);
           }
         }
       }
     } else {
-      drush_set_error('Failed to copy ' . $config['download_path'] . $project['tarname'] . ' to ' . $config['feature_destination_path'] . '/' . $featurename . '/');
+      $msg = dt('Failed to copy !src to !dest',
+        array(
+          '!src' => $config['download_path'] . $project['tarname'],
+          '!dest' => $config['feature_destination_path'] . '/' . $featurename . '/',
+        )
+      );
+      drush_set_error($msg);
     }    
   } else {
-    drush_set_error('Failed to retrieve a <' . $featurename . '> Feature at '. $config['download_path']); 
+    $msg = dt('Failed to retrieve a <!featurename> Feature at !downpath', 
+      array(
+      '!featurename' => $featurename,
+      '!downpath' => $config['download_path'],
+      )
+    ); 
+    drush_set_error($msg);
   }
   
   if (drush_get_error_log()){
-    drush_set_error('OH NOES! Drush could not complete fetching Feature <' . $featurename . '>');
+    $msg = dt('OH NOES! Drush could not complete fetching Feature <!featurename>', 
+      array('!featurename' => $featurename));
+    drush_set_error($msg);
   } else {
-    drush_log('SUCCESS! Feature <' . $featurename . '> was fetched.', 'ok');
+    $msg = dt('SUCCESS! Feature <!featurename> was fetched.', 
+      array('!featurename' => $featurename));
+    drush_log($msg, 'ok');
   }
 }
 
